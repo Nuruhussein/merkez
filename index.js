@@ -194,6 +194,10 @@ app.get("/logout", (req, res) => {
     res.status(200).json({ message: "Logout successful" });
   });
 });
+// Define a route for the root path
+app.get("/", (req, res) => {
+  res.send("Welcome to the backend!");
+});
 
 // Routes for Posts and Messages
 app.use("/posts", postsRoute);

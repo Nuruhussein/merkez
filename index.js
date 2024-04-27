@@ -23,6 +23,7 @@ const app = express();
 
 // Middleware to parse JSON bodies
 app.use(express.json()); // Ensure this middleware is included
+app.set("trust proxy", true);
 
 // MongoDB Connection
 const mongoURI = process.env.MONGO_URI; // Use environment variables for security
@@ -57,15 +58,13 @@ app.use(
   })
 );
 
-// // CORS Configuration
-// app.use(
-//   cors({
-//     origin: process.env.CORS_ORIGIN, // Use environment variable to set allowed CORS origins
-//     credentials: true,
-//   })
-// );
-
-app.use(cors({ origin: "*", credentials: true }));
+// CORS Configuration
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN, // Use environment variable to set allowed CORS origins
+    credentials: true,
+  })
+);
 
 // Passport Configuration
 passport.use(
@@ -198,9 +197,11 @@ app.get("/logout", (req, res) => {
   });
 });
 
-app.use((req, res, next) => {
-  console.log(`Request from origin: ${req.get("Origin")}`);
-  next();
+// app.use(cors({ origin: "*", credentials: true }));
+
+// Define a route for the root path
+app.get("/", (req, res) => {
+  res.send("Welcome to the backend!");
 });
 
 // Routes for Posts and Messages

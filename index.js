@@ -51,6 +51,7 @@ app.use(
     store: store, // Ensure MongoStore is properly initialized
     cookie: {
       secure: process.env.NODE_ENV === "production", // Set secure to true if using HTTPS
+      httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // Set session cookie expiry (1 day)
     },
   })
@@ -194,9 +195,10 @@ app.get("/logout", (req, res) => {
     res.status(200).json({ message: "Logout successful" });
   });
 });
-// Define a route for the root path
-app.get("/", (req, res) => {
-  res.send("Welcome to the backend!");
+
+app.use((req, res, next) => {
+  console.log(`Request from origin: ${req.get("Origin")}`);
+  next();
 });
 
 // Routes for Posts and Messages

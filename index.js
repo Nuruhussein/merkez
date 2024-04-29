@@ -57,22 +57,32 @@ app.use(
     },
   })
 );
-
-// CORS configuration
-const allowedOrigins = process.env.CORS_ORIGIN.split(",");
+const allowedOrigins = ["https://your-frontend-domain.com"];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
+    origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true,
+    credentials: true, // Allow cookies and credentials
   })
 );
+
+app.options("*", cors()); // This allows all preflight requests
+app.use((req, res, next) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://merkez-cb75l60gn-nurus-projects-12d75621.vercel.app"
+  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
 
 // Passport configuration
 passport.use(

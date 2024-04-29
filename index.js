@@ -32,7 +32,7 @@ app.set("trust proxy", true);
 const mongoURI = process.env.MONGO_URI; // Use environment variables for security
 mongoose
   .connect(mongoURI, {
-    ssl: true, // Ensure SSL/TLS is enabled
+    // ssl: true, // Ensure SSL/TLS is enabled
   })
   .then(() => {
     console.log("Connected to MongoDB Atlas");
@@ -44,7 +44,7 @@ mongoose
 const store = new MongoStore({
   mongoUrl: process.env.MONGO_URI, // Use correct MongoDB connection string
   collectionName: "sessions", // Ensure the collection name matches the one in MongoDB
-  autoRemove: "native", // Choose how sessions are removed (e.g., 'native' for MongoDB's TTL)
+  // autoRemove: "native", // Choose how sessions are removed (e.g., 'native' for MongoDB's TTL)
 });
 
 app.use(

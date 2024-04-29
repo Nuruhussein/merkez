@@ -32,7 +32,7 @@ app.set("trust proxy", true);
 const mongoURI = process.env.MONGO_URI; // Use environment variables for security
 mongoose
   .connect(mongoURI, {
-    // ssl: true, // Ensure SSL/TLS is enabled
+    ssl: true, // Ensure SSL/TLS is enabled
   })
   .then(() => {
     console.log("Connected to MongoDB Atlas");
@@ -44,7 +44,7 @@ mongoose
 const store = new MongoStore({
   mongoUrl: process.env.MONGO_URI, // Use correct MongoDB connection string
   collectionName: "sessions", // Ensure the collection name matches the one in MongoDB
-  // autoRemove: "native", // Choose how sessions are removed (e.g., 'native' for MongoDB's TTL)
+  autoRemove: "native", // Choose how sessions are removed (e.g., 'native' for MongoDB's TTL)
 });
 
 app.use(
@@ -55,9 +55,10 @@ app.use(
     store: store, // Ensure MongoStore is properly initialized
     cookie: {
       secure: process.env.NODE_ENV === "production", // Set secure to true if using HTTPS
-
+      httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // Set session cookie expiry (1 day)
       sameSite: "Lax", // Allow safe cross-origin navigation
+      domain: ".merkez-2px2bchg7-nurus-projects-12d75621.vercel.app",
     },
   })
 );

@@ -33,10 +33,7 @@ app.use(helmet());
 // MongoDB connection
 const mongoURI = process.env.MONGO_URI;
 mongoose
-  .connect(mongoURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(mongoURI)
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((err) => console.error("MongoDB connection error:", err));
 

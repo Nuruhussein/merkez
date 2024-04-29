@@ -58,7 +58,7 @@ app.use(
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // Set session cookie expiry (1 day)
       sameSite: "Lax", // Allow safe cross-origin navigation
-      domain: ".https://merkez-fcpwoze0z-nurus-projects-12d75621.vercel.app",
+      domain: ".merkez-fcpwoze0z-nurus-projects-12d75621.vercel.app",
     },
   })
 );

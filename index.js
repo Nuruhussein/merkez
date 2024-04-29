@@ -10,6 +10,7 @@ import { fileURLToPath } from "url";
 import path from "path";
 import MongoStore from "connect-mongo";
 import dotenv from "dotenv"; // Load environment variables
+import helmet from "helmet";
 dotenv.config(); // Initialize dotenv to load variables from `.env`
 
 const __filename = fileURLToPath(import.meta.url);
@@ -20,6 +21,8 @@ import messageRoute from "./routes/messageroute.js";
 import { User } from "./models/users.js";
 
 const app = express();
+// Set Referrer-Policy for security and privacy
+app.use(helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" }));
 
 // Middleware to parse JSON bodies
 app.use(express.json()); // Ensure this middleware is included

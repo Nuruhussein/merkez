@@ -41,7 +41,7 @@ mongoose
 const store = new MongoStore({
   mongoUrl: process.env.MONGO_URI, // Use correct MongoDB connection string
   collectionName: "sessions", // Ensure the collection name matches the one in MongoDB
-  autoRemove: "native", // Choose how sessions are removed (e.g., 'native' for MongoDB's TTL)
+  // autoRemove: "native", // Choose how sessions are removed (e.g., 'native' for MongoDB's TTL)
 });
 
 app.use(

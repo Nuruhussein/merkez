@@ -61,7 +61,7 @@ app.use(
 // CORS Configuration
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN, // Use environment variable to set allowed CORS origins
+    origin: process.env.CORS_ORIGIN.split(","), // Support multiple origins
     credentials: true,
   })
 );

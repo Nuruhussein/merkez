@@ -51,7 +51,7 @@ app.use(
     saveUninitialized: false, // Prevent creating sessions for unauthenticated users
     store: store, // Ensure MongoStore is properly initialized
     cookie: {
-      secure: process.env.NODE_ENV === "production", // Set secure to true if using HTTPS
+      secure: true, // Set secure to true if using HTTPS
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // Set session cookie expiry (1 day)
       sameSite: "Lax", // Allow safe cross-origin navigation

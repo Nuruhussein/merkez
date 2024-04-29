@@ -55,7 +55,7 @@ app.use(
     store: store, // Ensure MongoStore is properly initialized
     cookie: {
       secure: process.env.NODE_ENV === "production", // Set secure to true if using HTTPS
-      httpOnly: true,
+
       maxAge: 1000 * 60 * 60 * 24, // Set session cookie expiry (1 day)
       sameSite: "Lax", // Allow safe cross-origin navigation
     },

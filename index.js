@@ -58,7 +58,7 @@ app.use(
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // Set session cookie expiry (1 day)
       sameSite: "Lax", // Allow safe cross-origin navigation
-      domain: ".merkez.vercel.app",
+      domain: "merkez.vercel.app",
     },
   })
 );
@@ -186,7 +186,7 @@ app.post("/login", passport.authenticate("local"), (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // Secure cookies in production
     sameSite: "Lax", // Adjust depending on security needs
-    domain: ".merkez.vercel.app", // Set the appropriate domain
+    domain: "merkez.vercel.app", // Set the appropriate domain
   });
   res.json({ message: "Login successful" });
 });

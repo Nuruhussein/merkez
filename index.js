@@ -4,15 +4,14 @@ import bcrypt from "bcrypt";
 import session from "express-session";
 import cors from "cors";
 import passport from "passport";
-import { Strategy as LocalStrategy } from "passport-local";
-import multer from "multer";
+import { Strategy as LocalStrategy } from "passport-local"; // Correct import for LocalStrategy
+import multer from "multer"; // Import Multer for handling file uploads
 import { fileURLToPath } from "url";
 import path from "path";
 import MongoStore from "connect-mongo";
-import dotenv from "dotenv";
+import dotenv from "dotenv"; // Load environment variables
 import helmet from "helmet";
-
-dotenv.config();
+dotenv.config(); // Initialize dotenv to load variables from `.env`
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,47 +21,53 @@ import messageRoute from "./routes/messageroute.js";
 import { User } from "./models/users.js";
 
 const app = express();
-app.use(helmet());
+// Set Referrer-Policy for security and privacy
+app.use(helmet.referrerPolicy({ policy: "strict-origin-when-cross-origin" }));
+
+// Middleware to parse JSON bodies
+app.use(express.json()); // Ensure this middleware is included
+app.set("trust proxy", true);
+
+// MongoDB Connection
+const mongoURI = process.env.MONGO_URI; // Use environment variables for security
+mongoose
+  .connect(mongoURI, {
+    ssl: true, // Ensure SSL/TLS is enabled
+  })
+  .then(() => {
+    console.log("Connected to MongoDB Atlas");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
+
+const store = new MongoStore({
+  mongoUrl: process.env.MONGO_URI, // Use correct MongoDB connection string
+  collectionName: "sessions", // Ensure the collection name matches the one in MongoDB
+  autoRemove: "native", // Choose how sessions are removed (e.g., 'native' for MongoDB's TTL)
+});
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET, // Ensure a strong session secret
+    resave: false, // Avoid unnecessarily saving unchanged sessions
+    saveUninitialized: false, // Prevent creating sessions for unauthenticated users
+    store: store, // Ensure MongoStore is properly initialized
+    cookie: {
+      secure: process.env.NODE_ENV === "production", // Set secure to true if using HTTPS
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24, // Set session cookie expiry (1 day)
+      sameSite: "None", // For cross-origin, "None" is required with secure: true
+      // domain: ".vercel.app", // Ensure this encompasses both frontend and backend domains
+    },
+  })
+);
 
 // CORS Configuration
 app.use(
   cors({
-    origin: "https://merkez.vercel.app", // Frontend domain
-    credentials: true, // Allow cross-origin cookies
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Additional headers if needed
-  })
-);
-
-// Middleware to parse JSON bodies
-app.use(express.json());
-app.set("trust proxy", true);
-
-// MongoDB Connection
-mongoose
-  .connect(process.env.MONGO_URI, {
-    ssl: true, // Ensure SSL/TLS is enabled
-  })
-  .then(() => console.log("Connected to MongoDB Atlas"))
-  .catch((err) => console.error("MongoDB connection error:", err));
-
-// Session Configuration
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    store: new MongoStore({
-      mongoUrl: process.env.MONGO_URI,
-      collectionName: "sessions",
-      autoRemove: "native",
-    }),
-    cookie: {
-      secure: process.env.NODE_ENV === "production", // Must be true for HTTPS
-      sameSite: "None", // Allow cross-origin cookies
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24, // Session expiry time (1 day)
-    },
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
   })
 );
 
@@ -100,6 +105,7 @@ passport.deserializeUser(async (id, done) => {
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 // Multer Configuration for File Uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {

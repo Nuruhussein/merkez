@@ -58,7 +58,7 @@ app.use(
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // Set session cookie expiry (1 day)
       sameSite: "None", // For cross-origin, "None" is required with secure: true
-      domain: ".vercel.app", // Ensure this encompasses both frontend and backend domains
+      // domain: ".vercel.app", // Ensure this encompasses both frontend and backend domains
     },
   })
 );

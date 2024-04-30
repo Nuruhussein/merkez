@@ -57,7 +57,8 @@ app.use(
       secure: process.env.NODE_ENV === "production", // Set secure to true if using HTTPS
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24, // Set session cookie expiry (1 day)
-      sameSite: "Lax", // Allow safe cross-origin navigation
+      sameSite: "None", // For cross-origin, "None" is required with secure: true
+      domain: ".vercel.app", // Ensure this encompasses both frontend and backend domains
     },
   })
 );
@@ -184,7 +185,7 @@ app.post("/login", passport.authenticate("local"), (req, res) => {
     maxAge: 1000 * 60 * 60 * 24, // Session expiry time (1 day)
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // Secure cookies in production
-    sameSite: "Lax", // Adjust depending on security needs
+    sameSite: "None", // Adjust depending on security needs
   });
   res.json({ message: "Login successful" });
 });

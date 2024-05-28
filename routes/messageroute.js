@@ -1,6 +1,6 @@
 import express from "express";
-const nodemailer = require("nodemailer");
-const validator = require("validator"); // Import validator
+import nodemailer from "nodemailer";
+import validator from "validator"; // Import validator
 import { Message } from "../models/message.js";
 // import { isLoggedIn, isAdmin } from "../middleware/middleware.js";
 const router = express.Router();

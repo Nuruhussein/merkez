@@ -6,18 +6,16 @@ import { Message } from "../models/message.js";
 const router = express.Router();
 // POST endpoint to store a new message
 
+// Configure the transporter for your email service
 const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.ethereal.email",
-  port: 587,
-  secure: false, // Use `true` for port 465, `false` for all other ports
+  service: "gmail", // or 'hotmail', 'outlook', etc.
   auth: {
-    user: "weddihaji@gmail.com",
-    pass: "jn7jnAPss4f63QBp6D",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
-router.post("/", async (req, res) => {
+app.post("/", async (req, res) => {
   try {
     const { name, email, message, phonenumber } = req.body;
 
@@ -28,28 +26,27 @@ router.post("/", async (req, res) => {
 
     const newMessage = new Message({ name, email, message, phonenumber });
     await newMessage.save();
-    res
-      .status(201)
-      .send({ message: "Message created successfully", data: newMessage });
 
     // Send email notification
     const mailOptions = {
-      from: `${email}`,
-      to: "weddihaji@gmail.com",
-      subject: "New Contact Form Message",
-      text: `You have received a new message from ${name} (${email}):\n\n${message}\n\nPhone Number: ${phonenumber}`,
+      from: `"${name}" <${email}>`, // Sender address is user's email
+      to: "weddihaji@gmail.com", // List of receivers
+      to: "weddihaji@gmail.com", // List of receivers
+      subject: "New Contact Form Message", // Subject line
+      text: `You have received a new message from ${name} (${email}):\n\n${message}\n\nPhone Number: ${phonenumber}`, // Plain text body
+      html: `<p>You have received a new message from <strong>${name}</strong> (${email}):</p><p>${message}</p><p>Phone Number: ${phonenumber}</p>`, // HTML body
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error(`Error sending email: ${error}`);
-        res.status(500).send({
+        return res.status(500).send({
           message: "Error creating message and sending email",
           error: error.message,
         });
       } else {
-        console.log(`Email sent: ${info.response}`);
-        res.status(201).send({
+        console.log(`Email sent: ${info.messageId}`);
+        return res.status(201).send({
           message: "Message created successfully and email sent",
           data: newMessage,
         });
@@ -61,6 +58,7 @@ router.post("/", async (req, res) => {
       .send({ message: "Error creating message", error: error.message });
   }
 });
+
 // Route for deleting a post by ID
 router.delete("/:id", async (request, response) => {
   try {

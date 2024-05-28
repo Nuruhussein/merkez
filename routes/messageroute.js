@@ -1,66 +1,23 @@
 import express from "express";
-import nodemailer from "nodemailer";
-import validator from "validator"; // Import validator
 import { Message } from "../models/message.js";
 // import { isLoggedIn, isAdmin } from "../middleware/middleware.js";
 const router = express.Router();
 // POST endpoint to store a new message
-// Configure the transporter for your email service
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
-
 router.post("/", async (req, res) => {
   try {
     const { name, email, message, phonenumber } = req.body;
 
-    // Validate email using validator
-    if (!validator.isEmail(email)) {
-      return res.status(400).send({ message: "Invalid email address" });
-    }
-
-    // Create a new message instance
     const newMessage = new Message({ name, email, message, phonenumber });
-
-    // Save the message to the database
     await newMessage.save();
-
-    // Send email notification
-    const mailOptions = {
-      from: `"${name}" <${email}>`, // Sender address is user's email
-      to: "weddihaji@gmail.com", // List of receivers
-      subject: "New Contact Form Message", // Subject line
-      text: `You have received a new message from ${name} (${email}):\n\n${message}\n\nPhone Number: ${phonenumber}`, // Plain text body
-      html: `<p>You have received a new message from <strong>${name}</strong> (${email}):</p><p>${message}</p><p>Phone Number: ${phonenumber}</p>`, // HTML body
-    };
-
-    // Send email using the transporter
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error(`Error sending email: ${error}`);
-        return res.status(500).send({
-          message: "Error sending email",
-          error: error.message,
-        });
-      } else {
-        console.log(`Email sent: ${info.messageId}`);
-        return res.status(201).send({
-          message: "Message created successfully and email sent",
-          data: newMessage,
-        });
-      }
-    });
+    res
+      .status(201)
+      .send({ message: "Message created successfully", data: newMessage });
   } catch (error) {
-    // Handle any unexpected errors
-    console.error(`Error creating message: ${error}`);
-    return res.status(500).send({ message: "Internal server error" });
+    res
+      .status(500)
+      .send({ message: "Error creating message", error: error.message });
   }
 });
-
 // Route for deleting a post by ID
 router.delete("/:id", async (request, response) => {
   try {

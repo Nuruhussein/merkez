@@ -6,7 +6,7 @@ import helmet from "helmet";
 import passport from "./config/passport.js";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
-import postsRoute from "./routes/postroute.js";
+import postsRoute from "./routes/postsroute.js";
 import messageRoute from "./routes/messageroute.js";
 import { environment } from "./utils/environment.js";
 import upload from "./middleware/multer.js";

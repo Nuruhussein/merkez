@@ -4,14 +4,14 @@ import {
   registerAdmin,
   login,
   logout,
-  checking,
+  checker,
 } from "../controllers/authController.js";
 
 const router = express.Router();
 
 router.post("/register", registerAdmin);
 router.post("/login", passport.authenticate("local"), login);
+router.get("/check", checker);
 router.get("/logout", logout);
-router.get("check", checking);
 
 export default router;

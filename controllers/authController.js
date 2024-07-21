@@ -45,7 +45,7 @@ export const logout = (req, res) => {
   });
 };
 
-export const checking = (req, res) => {
+export const checker = (req, res) => {
   if (req.isAuthenticated()) {
     res.status(200).json({ isAuthenticated: true, user: req.user });
   } else {
